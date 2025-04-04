@@ -1,4 +1,4 @@
-package dev.luismachadoreis.flighttracker.server.infrastructure;
+package dev.luismachadoreis.flighttracker.server.infrastructure.repository;
 
 import dev.luismachadoreis.flighttracker.server.domain.Ping;
 import dev.luismachadoreis.flighttracker.server.domain.PingRepository;

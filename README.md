@@ -5,15 +5,14 @@
 ![JUnit](https://img.shields.io/badge/JUnit-5.x-blue)
 ![JaCoCo](https://img.shields.io/badge/JaCoCo-0.8.x-blue)
 ![Kafka](https://img.shields.io/badge/Kafka-4.x-red)
+![Redis](https://img.shields.io/badge/Redis-7.4-green)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-green)
 
 A Spring Boot application for tracking flight events.
 
 ## Build Status
 
 [![Java CI with Maven](https://github.com/luismr/flight-tracker-event-server-java/actions/workflows/maven.yml/badge.svg)](https://github.com/luismr/flight-tracker-event-server-java/actions/workflows/maven.yml)
-
-## Code Coverage
-
 ![Coverage](badges/jacoco.svg)
 ![Branches](badges/branches.svg)
 

@@ -65,12 +65,32 @@ To enable automatic badge updates and coverage reports, ensure the following Git
 ```
 src/
 ├── main/
-│   └── java/
-│       └── dev/
-│           └── luismachadoreis/
-│               └── flighttracker/
-│                   └── server/
-│                       └── FlightTrackerApplication.java
+│   ├── java/
+│   │   └── dev/
+│   │       └── luismachadoreis/
+│   │           └── flighttracker/
+│   │               └── server/
+│   │                   ├── api/
+│   │                   │   └── PingController.java
+│   │                   ├── application/
+│   │                   │   ├── dto/
+│   │                   │   │   └── PingDTO.java
+│   │                   │   └── PingService.java
+│   │                   ├── domain/
+│   │                   │   ├── event/
+│   │                   │   │   └── PingCreated.java
+│   │                   │   ├── Ping.java
+│   │                   │   └── PingRepository.java
+│   │                   ├── infrastructure/
+│   │                   │   ├── event/
+│   │                   │   │   ├── FlightDataSubscriber.java
+│   │                   │   │   ├── PingEventPublisher.java
+│   │                   │   │   └── PingEventSubscriber.java
+│   │                   │   ├── kafka/
+│   │                   │   └── repository/
+│   │                   └── FlightTrackerApplication.java
+│   └── resources/
+│       └── application.yml
 └── test/
     └── java/
         └── dev/

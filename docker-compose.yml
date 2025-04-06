@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+  kafka:
+    image: apache/kafka:latest
+    ports:
+      - "9092:9092"
+    volumes:
+      - kafka_data:/kafka/data
+
+  postgres:
+    image: postgres:17
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: flighttracker
+      POSTGRES_PASSWORD: flighttracker
+      POSTGRES_DB: flighttracker
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U flighttracker"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  redis_data:
+  kafka_data:
+  postgres_data: 

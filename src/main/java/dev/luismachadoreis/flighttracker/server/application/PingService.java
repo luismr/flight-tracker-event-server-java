@@ -38,8 +38,8 @@ public class PingService {
             pingDTO.positionSource()
         );
         
-        pingRepository.save(ping);
         ping.registerPingCreated();
+        pingRepository.save(ping);
         
         return pingDTO;
     }

@@ -3,26 +3,38 @@ spring:
     bootstrap-servers: localhost:9092
     consumer:
       group-id: flight-tracker-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "dev.luismachadoreis.flighttracker.server.application.dto"
     topic:
       flight-positions: flight-positions
       ping-created: ping-created
-  
+
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
-  
-  datasource:
-    url: jdbc:h2:mem:flighttracker
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: password
-  
-  h2:
-    console:
-      enabled: true
-      path: /h2-console 
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
-  default:
-    request:
-      limit: 50
+  datasource:
+    url: jdbc:postgresql://localhost:5432/flighttracker
+    username: flighttracker
+    password: flighttracker
+    driver-class-name: org.postgresql.Driver
+
+  redis:
+    host: localhost
+    port: 6379
+
+logging:
+  level:
+    root: INFO
+    dev.luismachadoreis.flighttracker.server: DEBUG
+    org.springframework.kafka: INFO
+    org.hibernate: INFO
+    org.springframework.data: INFO

@@ -20,8 +20,90 @@ A Spring Boot application for tracking flight events.
 
 ### Prerequisites
 
-- JDK 21
-- Maven 3.8+
+- Java 21
+- Maven 3.9.6
+- Docker and Docker Compose
+
+### External Dependencies
+
+The application requires the following external services:
+
+- Redis 7.4
+- PostgreSQL 17
+- Apache Kafka 4
+
+#### Using Docker Compose
+
+The project includes a `docker-compose.yml` file that sets up all required services. To manage the services:
+
+```bash
+# Start all services
+docker-compose up -d
+
+# Stop all services
+docker-compose down
+
+# View logs for all services
+docker-compose logs -f
+
+# View logs for a specific service
+docker-compose logs -f redis
+docker-compose logs -f postgres
+docker-compose logs -f kafka
+
+# Restart a specific service
+docker-compose restart redis
+docker-compose restart postgres
+docker-compose restart kafka
+
+# Stop and remove all containers and volumes
+docker-compose down -v
+```
+
+#### Service Details
+
+- **Redis**
+  - Port: 6379
+  - No authentication required
+  - Data persistence enabled
+
+- **PostgreSQL**
+  - Port: 5432
+  - Database: flighttracker
+  - Username: flighttracker
+  - Password: flighttracker
+  - Schema: flighttracker
+
+- **Kafka**
+  - Port: 9092
+  - Auto topic creation enabled
+  - Single broker configuration
+
+#### Manual Service Management
+
+If you prefer to manage services individually:
+
+```bash
+# Redis
+docker run -d --name redis -p 6379:6379 redis:7.4
+
+# PostgreSQL
+docker run -d --name postgres \
+  -e POSTGRES_USER=flighttracker \
+  -e POSTGRES_PASSWORD=flighttracker \
+  -e POSTGRES_DB=flighttracker \
+  -p 5432:5432 \
+  postgres:17
+
+# Kafka
+docker run -d --name kafka \
+  -p 9092:9092 \
+  -e KAFKA_BROKER_ID=1 \
+  -e KAFKA_LISTENERS=PLAINTEXT://:9092 \
+  -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
+  -e KAFKA_AUTO_CREATE_TOPICS_ENABLE=true \
+  apache/kafka:4
+```
 
 ### Cloning the Repository
 
@@ -63,41 +145,58 @@ To enable automatic badge updates and coverage reports, ensure the following Git
 ## Project Structure
 
 ```
-src/
-├── main/
-│   ├── java/
-│   │   └── dev/
-│   │       └── luismachadoreis/
-│   │           └── flighttracker/
-│   │               └── server/
-│   │                   ├── api/
-│   │                   │   └── PingController.java
-│   │                   ├── application/
-│   │                   │   ├── dto/
-│   │                   │   │   └── PingDTO.java
-│   │                   │   └── PingService.java
-│   │                   ├── domain/
-│   │                   │   ├── event/
-│   │                   │   │   └── PingCreated.java
-│   │                   │   ├── Ping.java
-│   │                   │   └── PingRepository.java
-│   │                   ├── infrastructure/
-│   │                   │   ├── event/
-│   │                   │   │   ├── FlightDataSubscriber.java
-│   │                   │   │   ├── PingEventPublisher.java
-│   │                   │   │   └── PingEventSubscriber.java
-│   │                   │   ├── kafka/
-│   │                   │   └── repository/
-│   │                   └── FlightTrackerApplication.java
-│   └── resources/
-│       └── application.yml
-└── test/
-    └── java/
-        └── dev/
-            └── luismachadoreis/
-                └── flighttracker/
-                    └── server/
-                        └── FlightTrackerApplicationTests.java
+.
+├── .github/
+│   └── workflows/
+│       └── maven.yml
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── dev/
+│   │   │       └── luismachadoreis/
+│   │   │           └── flighttracker/
+│   │   │               └── server/
+│   │   │                   ├── api/
+│   │   │                   │   └── PingController.java
+│   │   │                   ├── application/
+│   │   │                   │   ├── dto/
+│   │   │                   │   │   └── PingDTO.java
+│   │   │                   │   └── PingService.java
+│   │   │                   ├── domain/
+│   │   │                   │   ├── event/
+│   │   │                   │   │   └── PingCreated.java
+│   │   │                   │   ├── Ping.java
+│   │   │                   │   └── PingRepository.java
+│   │   │                   ├── infrastructure/
+│   │   │                   │   ├── event/
+│   │   │                   │   │   ├── FlightDataSubscriber.java
+│   │   │                   │   │   ├── PingEventPublisher.java
+│   │   │                   │   │   └── PingEventSubscriber.java
+│   │   │                   │   ├── kafka/
+│   │   │                   │   │   ├── FlightDataConsumer.java
+│   │   │                   │   │   └── KafkaConfig.java
+│   │   │                   │   └── repository/
+│   │   │                   │       └── JpaPingRepository.java
+│   │   │                   └── FlightTrackerApplication.java
+│   │   └── resources/
+│   │       └── application.yml
+│   └── test/
+│       └── java/
+│           └── dev/
+│               └── luismachadoreis/
+│                   └── flighttracker/
+│                       └── server/
+│                           └── FlightTrackerApplicationTests.java
+├── badges/
+│   ├── jacoco.svg
+│   └── branches.svg
+├── db/
+│   └── init-scripts/
+│       └── 01-init.sql
+├── docker-compose.yml
+├── LICENSE.md
+├── pom.xml
+└── README.md
 ```
 
 ## License

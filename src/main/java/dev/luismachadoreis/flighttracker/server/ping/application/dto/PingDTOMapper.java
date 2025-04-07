@@ -3,7 +3,7 @@ package dev.luismachadoreis.flighttracker.server.ping.application.dto;
 import java.time.Instant;
 import java.util.UUID;
 
-public class PingDTOMapper {
+public final class PingDTOMapper {
 
     /**
      * Map a FlightDataDTO to a PingDTO.

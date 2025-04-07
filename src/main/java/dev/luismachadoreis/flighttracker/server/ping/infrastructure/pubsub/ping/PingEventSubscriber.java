@@ -1,6 +1,6 @@
-package dev.luismachadoreis.flighttracker.server.infrastructure.event;
+package dev.luismachadoreis.flighttracker.server.ping.infrastructure.pubsub.ping;
 
-import dev.luismachadoreis.flighttracker.server.domain.event.PingCreated;
+import dev.luismachadoreis.flighttracker.server.ping.domain.event.PingCreated;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;  
 import org.springframework.stereotype.Component;

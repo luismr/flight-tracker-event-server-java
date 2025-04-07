@@ -1,8 +1,8 @@
-package dev.luismachadoreis.flighttracker.server.application.dto;
+package dev.luismachadoreis.flighttracker.server.ping.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record PingDTO(
+public record FlightDataDTO(
     @JsonProperty("icao24") String icao24,
     @JsonProperty("callsign") String callsign,
     @JsonProperty("origin_country") String originCountry,

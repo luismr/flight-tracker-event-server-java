@@ -7,7 +7,7 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: "dev.luismachadoreis.flighttracker.server.application.dto"
+        spring.json.trusted.packages: "dev.luismachadoreis.flighttracker.server.ping.application.dto"
     topic:
       flight-positions: flight-positions
       ping-created: ping-created
@@ -38,3 +38,45 @@ logging:
     org.springframework.kafka: INFO
     org.hibernate: INFO
     org.springframework.data: INFO
+
+api:
+  title: Flight Tracker Event Server API
+  description: |
+    API for tracking and managing flight position data.
+    
+    This service provides endpoints to:
+    - Retrieve recent flight position pings
+    - Track aircraft movements
+    - Monitor flight data in real-time
+  version: 0.0.1-SNAPSHOT
+  contact:
+    name: Luis Machado Reis
+    email: luis.machadoreis@dev.com
+    url: https://github.com/luismachadoreis
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+  servers:
+    - url: http://localhost:8080
+      description: Local Development Server
+    - url: https://dev-api.flighttracker.com
+      description: Development Server
+    - url: https://staging-api.flighttracker.com
+      description: Staging Server
+    - url: https://api.flighttracker.com
+      description: Production Server
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+    tryItOutEnabled: true
+    filter: true
+    syntax-highlight:
+      activated: true
+      theme: monokai
+  show-actuator: true
+  packages-to-scan: dev.luismachadoreis.flighttracker.server.ping.api

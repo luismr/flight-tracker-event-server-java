@@ -27,7 +27,7 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: "dev.luismachadoreis.flighttracker.server.application.dto"
+        spring.json.trusted.packages: "dev.luismachadoreis.flighttracker.server.ping.application.dto"
     topic:
       flight-positions: flight-positions-test
       ping-created: ping-created-test

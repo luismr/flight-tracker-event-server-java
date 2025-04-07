@@ -1,4 +1,4 @@
-package dev.luismachadoreis.flighttracker.server.domain.event;
+package dev.luismachadoreis.flighttracker.server.ping.domain.event;
 
 import java.time.Instant;
 import java.util.UUID;

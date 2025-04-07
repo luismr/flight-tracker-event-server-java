@@ -21,16 +21,23 @@ spring:
 
   kafka:
     bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.trusted.packages: "dev.luismachadoreis.flighttracker.server"
     consumer:
-      group-id: flight-tracker-group-test
+      group-id: flight-tracker-test
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: "dev.luismachadoreis.flighttracker.server.ping.application.dto"
+        spring.json.trusted.packages: "dev.luismachadoreis.flighttracker.server"
     topic:
       flight-positions: flight-positions-test
       ping-created: ping-created-test
+      ping-updated: ping-updated-test
+      ping-deleted: ping-deleted-test
 
   redis:
     host: localhost

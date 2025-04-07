@@ -10,17 +10,27 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
 @Configuration
 @EnableConfigurationProperties(OpenApiConfig.ApiProperties.class)
-public class OpenApiConfig {
+public class OpenApiConfig implements WebMvcConfigurer {
 
     private final ApiProperties properties;
 
     public OpenApiConfig(ApiProperties properties) {
         this.properties = properties;
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addRedirectViewController("/swagger-ui", "/swagger-ui/index.html");
+        registry.addRedirectViewController("/swagger-ui/", "/swagger-ui/index.html");
+        registry.addRedirectViewController("/api-docs", "/v3/api-docs");
+        registry.addRedirectViewController("/api-docs/", "/v3/api-docs");
     }
 
     @Bean

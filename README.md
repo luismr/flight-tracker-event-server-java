@@ -2,11 +2,13 @@
 
 ![Java](https://img.shields.io/badge/Java-21-blue)
 ![SpringBoot](https://img.shields.io/badge/SpringBoot-3.4.x-blue)
-![JUnit](https://img.shields.io/badge/JUnit-5.x-blue)
-![JaCoCo](https://img.shields.io/badge/JaCoCo-0.8.x-blue)
+![Swagger](https://img.shields.io/badge/Swagger-3.0-orange)
+![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-orange)
 ![Kafka](https://img.shields.io/badge/Kafka-4.x-red)
 ![Redis](https://img.shields.io/badge/Redis-7.4-green)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-green)
+![JUnit](https://img.shields.io/badge/JUnit-5.x-blue)
+![JaCoCo](https://img.shields.io/badge/JaCoCo-0.8.x-blue)
 
 A Spring Boot application for tracking flight events.
 

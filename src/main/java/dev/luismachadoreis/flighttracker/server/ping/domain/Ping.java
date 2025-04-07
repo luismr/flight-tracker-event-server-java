@@ -160,7 +160,7 @@ public class Ping extends AbstractAggregateRoot<Ping> {
     public static class IntegerArrayConverter implements AttributeConverter<Integer[], String> {
         @Override
         public String convertToDatabaseColumn(Integer[] attribute) {
-            if (attribute == null) return null;
+            if (attribute == null) return "";
             return String.join(",", java.util.Arrays.stream(attribute)
                 .map(String::valueOf)
                 .toArray(String[]::new));
@@ -168,7 +168,7 @@ public class Ping extends AbstractAggregateRoot<Ping> {
 
         @Override
         public Integer[] convertToEntityAttribute(String dbData) {
-            if (dbData == null) return null;
+            if (dbData == null || dbData.isEmpty()) return new Integer[0];
             return java.util.Arrays.stream(dbData.split(","))
                 .map(Integer::valueOf)
                 .toArray(Integer[]::new);

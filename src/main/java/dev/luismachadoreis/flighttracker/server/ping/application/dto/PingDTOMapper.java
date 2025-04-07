@@ -3,38 +3,38 @@ package dev.luismachadoreis.flighttracker.server.ping.application.dto;
 import java.time.Instant;
 import java.util.UUID;
 
-public final class PingDTOMapper {
+public class PingDTOMapper {
 
     /**
      * Map a FlightDataDTO to a PingDTO.
-     * @param dto The FlightDataDTO to map.
+     * @param flightData The FlightDataDTO to map.
      * @return The PingDTO.
      */
-    public static PingDTO fromFlightData(FlightDataDTO dto) {
+    public static PingDTO fromFlightData(FlightDataDTO flightData) {
         return new PingDTO(
             UUID.randomUUID(),
             new PingDTO.Aircraft(
-                dto.icao24(),
-                dto.callsign(),
-                dto.originCountry(),
-                dto.lastContact() != null ? Instant.ofEpochSecond(dto.lastContact()) : null,
-                dto.squawk(),
-                dto.spi(),
-                dto.sensors()
+                flightData.icao24(),
+                flightData.callsign(),
+                flightData.originCountry(),
+                flightData.lastContact() != null ? Instant.ofEpochSecond(flightData.lastContact()) : null,
+                flightData.squawk(),
+                flightData.spi(),
+                flightData.sensors()
             ),
             new PingDTO.Vector(
-                dto.velocity(),
-                dto.trueTrack(),
-                dto.verticalRate()
+                flightData.velocity(),
+                flightData.trueTrack(),
+                flightData.verticalRate()
             ),
             new PingDTO.Position(
-                dto.longitude(),
-                dto.latitude(),
-                dto.geoAltitude(),
-                dto.baroAltitude(),
-                dto.onGround(),
-                dto.positionSource(),
-                dto.timePosition() != null ? Instant.ofEpochSecond(dto.timePosition()) : null
+                flightData.longitude(),
+                flightData.latitude(),
+                flightData.geoAltitude(),
+                flightData.baroAltitude(),
+                flightData.onGround(),
+                flightData.positionSource(),
+                flightData.timePosition() != null ? Instant.ofEpochSecond(flightData.timePosition()) : null
             ),
             Instant.now()
         );

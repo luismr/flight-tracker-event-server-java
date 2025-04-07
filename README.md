@@ -158,37 +158,54 @@ To enable automatic badge updates and coverage reports, ensure the following Git
 │   │   │       └── luismachadoreis/
 │   │   │           └── flighttracker/
 │   │   │               └── server/
-│   │   │                   ├── api/
-│   │   │                   │   └── PingController.java
-│   │   │                   ├── application/
-│   │   │                   │   ├── dto/
-│   │   │                   │   │   └── PingDTO.java
-│   │   │                   │   └── PingService.java
-│   │   │                   ├── domain/
-│   │   │                   │   ├── event/
-│   │   │                   │   │   └── PingCreated.java
-│   │   │                   │   ├── Ping.java
-│   │   │                   │   └── PingRepository.java
-│   │   │                   ├── infrastructure/
-│   │   │                   │   ├── event/
-│   │   │                   │   │   ├── FlightDataSubscriber.java
-│   │   │                   │   │   ├── PingEventPublisher.java
-│   │   │                   │   │   └── PingEventSubscriber.java
-│   │   │                   │   ├── kafka/
-│   │   │                   │   │   ├── FlightDataConsumer.java
-│   │   │                   │   │   └── KafkaConfig.java
-│   │   │                   │   └── repository/
-│   │   │                   │       └── JpaPingRepository.java
+│   │   │                   ├── common/
+│   │   │                   │   └── infrastructure/
+│   │   │                   │       └── OpenApiConfig.java
+│   │   │                   ├── ping/
+│   │   │                   │   ├── api/
+│   │   │                   │   │   └── PingController.java
+│   │   │                   │   ├── application/
+│   │   │                   │   │   ├── dto/
+│   │   │                   │   │   │   ├── FlightDataDTO.java
+│   │   │                   │   │   │   ├── PingDTO.java
+│   │   │                   │   │   │   └── PingDTOMapper.java
+│   │   │                   │   │   └── PingService.java
+│   │   │                   │   ├── domain/
+│   │   │                   │   │   ├── event/
+│   │   │                   │   │   │   └── PingCreated.java
+│   │   │                   │   │   ├── Ping.java
+│   │   │                   │   │   └── PingRepository.java
+│   │   │                   │   └── infrastructure/
+│   │   │                   │       ├── event/
+│   │   │                   │       │   ├── FlightDataSubscriber.java
+│   │   │                   │       │   ├── PingEventPublisher.java
+│   │   │                   │       │   └── PingEventSubscriber.java
+│   │   │                   │       ├── kafka/
+│   │   │                   │       │   ├── FlightDataConsumer.java
+│   │   │                   │       │   └── KafkaConfig.java
+│   │   │                   │       └── repository/
+│   │   │                   │           └── JpaPingRepository.java
 │   │   │                   └── FlightTrackerApplication.java
 │   │   └── resources/
-│   │       └── application.yml
+│   │       ├── application.yml
+│   │       └── application-test.yml
 │   └── test/
 │       └── java/
 │           └── dev/
 │               └── luismachadoreis/
 │                   └── flighttracker/
 │                       └── server/
-│                           └── FlightTrackerApplicationTests.java
+│                           ├── ping/
+│                           │   ├── api/
+│                           │   │   └── PingControllerTest.java
+│                           │   ├── application/
+│                           │   │   └── dto/
+│                           │   │       ├── FlightDataDTOTest.java
+│                           │   │       ├── PingDTOTest.java
+│                           │   │       └── PingDTOMapperTest.java
+│                           │   └── domain/
+│                           │       └── PingTest.java
+│                           └── SpringContextTest.java
 ├── badges/
 │   ├── jacoco.svg
 │   └── branches.svg

@@ -144,6 +144,52 @@ To enable automatic badge updates and coverage reports, ensure the following Git
    - "Read and write permissions"
    - "Allow GitHub Actions to create and approve pull requests"
 
+## Read Write Datasource Routing
+
+![Read Write Deployment](docs/arch_diagram_datasource_read_write.png)  
+
+The application supports read-write splitting for database operations. This feature is disabled by default but can be enabled through configuration.
+
+### Configuration
+
+```yaml
+spring:
+  datasource:
+    writer:
+      jdbcUrl: jdbc:postgresql://localhost:5432/flighttracker
+      username: flighttracker
+      password: flighttracker
+      driverClassName: org.postgresql.Driver
+      type: com.zaxxer.hikari.HikariDataSource
+    reader:
+      jdbcUrl: jdbc:postgresql://localhost:5433/flighttracker
+      username: flighttracker
+      password: flighttracker
+      driverClassName: org.postgresql.Driver
+      type: com.zaxxer.hikari.HikariDataSource
+
+app:
+  read-write-routing:
+    enabled: false  # Set to true to enable read-write splitting
+```
+
+### Important Notes
+
+1. When enabled, you must configure both write and read data sources
+2. The routing is based on Spring's `@Transactional` annotation:
+   - Read operations: Use `@Transactional(readOnly = true)`
+   - Write operations: Use `@Transactional` or `@Transactional(readOnly = false)`
+
+![Read Write DataSource Routing](docs/arch_diagram_datasource_routing.png)
+
+3. If read-write splitting is enabled but not properly configured, the application will fail to start
+4. For development and testing, it's recommended to keep this feature disabled
+5. The routing is handled by:
+   - `DatasourceConfig`: Configures the data sources and routing
+   - `RoutingDataSource`: Routes requests to the appropriate data source
+   - `ReadWriteRoutingAspect`: Sets the context based on transaction type
+   - `DbContextHolder`: Thread-local holder for the current context
+
 ## Project Structure
 
 ```
@@ -171,6 +217,12 @@ To enable automatic badge updates and coverage reports, ensure the following Git
 │   │   │                   │   │           ├── Mediator.java
 │   │   │                   │   │           └── SpringMediator.java
 │   │   │                   │   └── infrastructure/
+│   │   │                   │       ├── datasource/
+│   │   │                   │       │   ├── DbContextHolder.java
+│   │   │                   │       │   ├── ReadWriteRoutingAspect.java
+│   │   │                   │       │   ├── ReadWriteRoutingProperties.java
+│   │   │                   │       │   └── RoutingDataSource.java
+│   │   │                   │       ├── DatasourceConfig.java
 │   │   │                   │       ├── KafkaConfig.java
 │   │   │                   │       └── OpenApiConfig.java
 │   │   │                   ├── flightdata/

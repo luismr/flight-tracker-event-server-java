@@ -16,16 +16,24 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/flighttracker
-    username: flighttracker
-    password: flighttracker
-    driver-class-name: org.postgresql.Driver
+    writer:
+      jdbcUrl: jdbc:postgresql://localhost:5432/flighttracker
+      username: flighttracker
+      password: flighttracker
+      driverClassName: org.postgresql.Driver
+      type: com.zaxxer.hikari.HikariDataSource
+    reader:
+      jdbcUrl: jdbc:postgresql://localhost:5433/flighttracker
+      username: flighttracker
+      password: flighttracker
+      driverClassName: org.postgresql.Driver
+      type: com.zaxxer.hikari.HikariDataSource
 
   redis:
     host: localhost
@@ -38,6 +46,21 @@ logging:
     org.springframework.kafka: INFO
     org.hibernate: INFO
     org.springframework.data: INFO
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+    tryItOutEnabled: true
+    filter: true
+    syntax-highlight:
+      activated: true
+      theme: monokai
+  show-actuator: true
+  packages-to-scan: dev.luismachadoreis.flighttracker.server.ping.api
 
 api:
   title: Flight Tracker Event Server API
@@ -66,17 +89,7 @@ api:
     - url: https://api.flighttracker.com
       description: Production Server
 
-springdoc:
-  api-docs:
-    path: /api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-    operationsSorter: method
-    tagsSorter: alpha
-    tryItOutEnabled: true
-    filter: true
-    syntax-highlight:
-      activated: true
-      theme: monokai
-  show-actuator: true
-  packages-to-scan: dev.luismachadoreis.flighttracker.server.ping.api
+app:
+  read-write-routing:
+    enabled: false
+

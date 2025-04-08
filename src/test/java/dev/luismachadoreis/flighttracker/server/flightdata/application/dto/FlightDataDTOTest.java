@@ -1,6 +1,8 @@
-package dev.luismachadoreis.flighttracker.server.ping.application.dto;
+package dev.luismachadoreis.flighttracker.server.flightdata.application.dto;
 
 import org.junit.jupiter.api.Test;
+
+import dev.luismachadoreis.flighttracker.server.ping.application.dto.FlightDataDTO;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

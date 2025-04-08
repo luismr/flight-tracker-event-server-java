@@ -3,16 +3,21 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.H2Dialect
 
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: password
+    writer:
+      jdbcUrl: jdbc:h2:mem:testdb_writer;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      driverClassName: org.h2.Driver
+      username: sa
+      password: password
+      type: com.zaxxer.hikari.HikariDataSource
+    reader:
+      jdbcUrl: jdbc:h2:mem:testdb_reader;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      driverClassName: org.h2.Driver
+      username: sa
+      password: password
+      type: com.zaxxer.hikari.HikariDataSource
 
   h2:
     console:
@@ -41,4 +46,8 @@ spring:
 
   redis:
     host: localhost
-    port: 6379 
+    port: 6379
+
+app:
+  read-write-routing:
+    enabled: false

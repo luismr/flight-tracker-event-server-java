@@ -266,10 +266,14 @@ app:
 │                   └── flighttracker/
 │                       └── server/
 │                           ├── common/
-│                           │   └── application/
-│                           │       └── cqs/
-│                           │           └── mediator/
-│                           │               └── SpringMediatorTest.java
+│                           │   ├── application/
+│                           │   │   └── cqs/
+│                           │   │       └── mediator/
+│                           │   │           └── SpringMediatorTest.java
+│                           │   └── infrastructure/
+│                           │       └── datasource/
+│                           │           ├── ReadWriteRoutingAspectTest.java
+│                           │           └── RoutingDataSourceTest.java
 │                           ├── flightdata/
 │                           │   └── infrastructure/
 │                           │       ├── kafka/

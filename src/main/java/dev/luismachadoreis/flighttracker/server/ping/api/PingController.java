@@ -1,33 +1,39 @@
 package dev.luismachadoreis.flighttracker.server.ping.api;
 
+import dev.luismachadoreis.flighttracker.server.ping.application.CreatePingCommand;
+import dev.luismachadoreis.flighttracker.server.ping.application.GetRecentPingsQuery;
 import dev.luismachadoreis.flighttracker.server.ping.application.dto.PingDTO;
-import dev.luismachadoreis.flighttracker.server.ping.application.usecase.CreatePingUseCase;
-import dev.luismachadoreis.flighttracker.server.ping.application.usecase.GetPingsUseCase;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Value;
+import dev.luismachadoreis.flighttracker.server.common.application.cqs.mediator.Mediator;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Ping API", description = "API for managing flight position pings")
+@Slf4j
 @RestController
-@RequestMapping("/api/pings")
+@RequestMapping("/api/v2/pings")
+@Tag(name = "Ping API", description = "API for managing flight position pings")
 public class PingController {
     
-    private final CreatePingUseCase createPingUseCase;
-    private final GetPingsUseCase getPingsUseCase;
-    private final int defaultRequestLimit;
+    private final Mediator mediator;
+    private final Integer defaultRequestLimit;
 
-    public PingController(CreatePingUseCase createPingUseCase, GetPingsUseCase getPingsUseCase, @Value("${default.request.limit:50}") int defaultRequestLimit) {
-        this.createPingUseCase = createPingUseCase;
-        this.getPingsUseCase = getPingsUseCase;
+    public PingController(Mediator mediator, @Value("${default.request.limit:50}") Integer defaultRequestLimit) {
+        this.mediator = mediator;
         this.defaultRequestLimit = defaultRequestLimit;
     }
 
@@ -43,8 +49,17 @@ public class PingController {
         }
     )
     @PostMapping
-    public ResponseEntity<PingDTO> createPing(@RequestBody PingDTO pingDTO) {
-        return ResponseEntity.ok(createPingUseCase.execute(pingDTO));
+    public ResponseEntity<Void> createPing(@RequestBody PingDTO pingDTO) {
+        UUID pingId = mediator.send(new CreatePingCommand(pingDTO));
+        
+        URI location = ServletUriComponentsBuilder
+            .fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(pingId)
+            .toUri();
+
+        log.info("Ping created with id: {}", pingId);
+        return ResponseEntity.created(location).build();
     }
 
     @Operation(
@@ -59,15 +74,15 @@ public class PingController {
         }
     )
     @GetMapping
-    public ResponseEntity<List<PingDTO>> getPings(
-        @Parameter(
-            description = "Maximum number of pings to retrieve",
-            example = "50"
-        )
-        @RequestParam(required = false) Integer limit
-    ) {
-        return ResponseEntity.ok(getPingsUseCase.execute(
-            Optional.ofNullable(limit).orElse(defaultRequestLimit)
-        ));
+    public ResponseEntity<List<PingDTO>> getRecentPings(@RequestParam(required = false) Integer limit) {
+        List<PingDTO> pings = mediator.send(
+            new GetRecentPingsQuery(
+                Optional.ofNullable(limit).orElse(defaultRequestLimit)
+            )
+        );
+
+        log.info("Recent pings retrieved: {}", pings);
+        return ResponseEntity.ok(pings);
     }
+
 } 

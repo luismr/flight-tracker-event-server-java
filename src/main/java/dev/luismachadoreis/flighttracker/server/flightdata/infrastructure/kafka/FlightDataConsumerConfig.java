@@ -1,4 +1,4 @@
-package dev.luismachadoreis.flighttracker.server.ping.infrastructure.kafka;
+package dev.luismachadoreis.flighttracker.server.flightdata.infrastructure.kafka;
 
 import dev.luismachadoreis.flighttracker.server.ping.application.dto.FlightDataDTO;
 

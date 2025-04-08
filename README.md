@@ -181,20 +181,17 @@ To enable automatic badge updates and coverage reports, ensure the following Git
 │   │   │                   │           └── FlightDataSubscriber.java
 │   │   │                   ├── ping/
 │   │   │                   │   ├── api/
-│   │   │                   │   │   ├── PingController.java
-│   │   │                   │   │   └── cqs/
-│   │   │                   │   │       └── PingController.java
+│   │   │                   │   │   └── PingController.java
 │   │   │                   │   ├── application/
 │   │   │                   │   │   ├── dto/
 │   │   │                   │   │   │   ├── FlightDataDTO.java
 │   │   │                   │   │   │   ├── PingDTO.java
 │   │   │                   │   │   │   └── PingDTOMapper.java
-│   │   │                   │   │   ├── usecase/
-│   │   │                   │   │   │   ├── CreatePingCommand.java
-│   │   │                   │   │   │   ├── CreatePingCommandHandler.java
-│   │   │                   │   │   │   ├── GetRecentPingsQuery.java
-│   │   │                   │   │   │   └── GetRecentPingsQueryHandler.java
-│   │   │                   │   │   └── PingService.java
+│   │   │                   │   │   └── usecase/
+│   │   │                   │   │       ├── CreatePingCommand.java
+│   │   │                   │   │       ├── CreatePingCommandHandler.java
+│   │   │                   │   │       ├── GetRecentPingsQuery.java
+│   │   │                   │   │       └── GetRecentPingsQueryHandler.java
 │   │   │                   │   ├── domain/
 │   │   │                   │   │   ├── event/
 │   │   │                   │   │   │   └── PingCreated.java
@@ -229,9 +226,7 @@ To enable automatic badge updates and coverage reports, ensure the following Git
 │                           │           └── FlightDataSubscriberTest.java
 │                           ├── ping/
 │                           │   ├── api/
-│                           │   │   ├── PingControllerTest.java
-│                           │   │   └── cqs/
-│                           │   │       └── PingControllerTest.java
+│                           │   │   └── PingControllerTest.java
 │                           │   ├── application/
 │                           │   │   ├── dto/
 │                           │   │   │   ├── FlightDataDTOTest.java

@@ -24,12 +24,12 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
-      env:
-        SPRING_COMMANDER_USERNAME: ${{ vars.SPRING_COMMANDER_USERNAME }}
-        SPRING_COMMANDER_TOKEN: ${{ secrets.SPRING_COMMANDER_TOKEN }}
     
     - name: Build with Maven
       run: cat .mvn/settings.xml && mvn -B clean verify --settings .mvn/settings.xml
+      env:
+        SPRING_COMMANDER_USERNAME: ${{ vars.SPRING_COMMANDER_USERNAME }}
+        SPRING_COMMANDER_TOKEN: ${{ secrets.SPRING_COMMANDER_TOKEN }}
       
     - name: Upload coverage report
       uses: actions/upload-artifact@v4

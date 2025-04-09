@@ -3,7 +3,7 @@ package dev.luismachadoreis.flighttracker.server.ping.api;
 import dev.luismachadoreis.flighttracker.server.ping.application.CreatePingCommand;
 import dev.luismachadoreis.flighttracker.server.ping.application.GetRecentPingsQuery;
 import dev.luismachadoreis.flighttracker.server.ping.application.dto.PingDTO;
-import dev.luismachadoreis.flighttracker.server.common.application.cqs.mediator.Mediator;
+import dev.luismachadoreis.blueprint.cqs.SpringCommanderMediator;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Ping API", description = "API for managing flight position pings")
 public class PingController {
     
-    private final Mediator mediator;
+    private final SpringCommanderMediator mediator;
     private final Integer defaultRequestLimit;
 
-    public PingController(Mediator mediator, @Value("${default.request.limit:50}") Integer defaultRequestLimit) {
+    public PingController(SpringCommanderMediator mediator, @Value("${default.request.limit:50}") Integer defaultRequestLimit) {
         this.mediator = mediator;
         this.defaultRequestLimit = defaultRequestLimit;
     }

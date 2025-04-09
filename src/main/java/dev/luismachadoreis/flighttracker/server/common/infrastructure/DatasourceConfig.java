@@ -45,7 +45,7 @@ public class DatasourceConfig {
             ReadWriteRoutingProperties props
     ) {
         if (!props.isEnabled()) {
-            return writer; // routing is OFF
+            return writer;
         }
 
         RoutingDataSource routingDataSource = new RoutingDataSource(writer, reader);

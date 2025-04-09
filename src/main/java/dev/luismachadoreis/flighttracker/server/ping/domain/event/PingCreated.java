@@ -3,7 +3,8 @@ package dev.luismachadoreis.flighttracker.server.ping.domain.event;
 import java.time.Instant;
 import java.util.UUID;
 
-public record PingCreated(
+
+public record PingCreated  (
     UUID pingId,
     String icao24,
     String callsign,

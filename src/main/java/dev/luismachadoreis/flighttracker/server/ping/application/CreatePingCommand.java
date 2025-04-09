@@ -1,6 +1,6 @@
 package dev.luismachadoreis.flighttracker.server.ping.application;
 
-import dev.luismachadoreis.flighttracker.server.common.application.cqs.command.Command;
+import dev.luismachadoreis.blueprint.cqs.command.Command;
 import dev.luismachadoreis.flighttracker.server.ping.application.dto.PingDTO;
 
 import java.util.UUID;

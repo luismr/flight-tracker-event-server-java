@@ -202,5 +202,5 @@ public class Ping extends AbstractAggregateRoot<Ping> {
             this.lastUpdate
         ));
     }
-
+    
 }

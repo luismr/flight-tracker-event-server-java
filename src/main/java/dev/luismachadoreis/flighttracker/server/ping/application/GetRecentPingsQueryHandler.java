@@ -1,6 +1,6 @@
 package dev.luismachadoreis.flighttracker.server.ping.application;
 
-import dev.luismachadoreis.flighttracker.server.common.application.cqs.query.QueryHandler;
+import dev.luismachadoreis.blueprint.cqs.query.QueryHandler;
 import dev.luismachadoreis.flighttracker.server.ping.application.dto.PingDTO;
 import dev.luismachadoreis.flighttracker.server.ping.domain.PingRepository;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package dev.luismachadoreis.flighttracker.server.flightdata.infrastructure.pubsub;
 
-import dev.luismachadoreis.flighttracker.server.common.application.cqs.mediator.Mediator;
+import dev.luismachadoreis.blueprint.cqs.SpringCommanderMediator;
 import dev.luismachadoreis.flighttracker.server.ping.application.CreatePingCommand;
 import dev.luismachadoreis.flighttracker.server.ping.application.dto.FlightDataDTO;
 import dev.luismachadoreis.flighttracker.server.ping.application.dto.PingDTOMapper;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class FlightDataSubscriber {
     
-    private final Mediator mediator;
+    private final SpringCommanderMediator mediator;
     
     @KafkaListener(topics = "${spring.kafka.topic.flight-positions}", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeFlightData(FlightDataDTO data) {

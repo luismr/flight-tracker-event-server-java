@@ -25,7 +25,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <springdoc.version>2.3.0</springdoc.version>
+        <spring-commander.version>0.0.2</spring-commander.version>
     </properties>
+    
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name>Spring Commander GitHub Packages</name>
+            <url>https://maven.pkg.github.com/luismr/spring-commander</url>
+        </repository>
+    </repositories>
     
     <dependencies>
         <dependency>
@@ -65,7 +74,13 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.version}</version>
         </dependency>
-        
+
+        <dependency>
+            <groupId>dev.luismachadoreis.blueprint</groupId>
+            <artifactId>spring-commander</artifactId>
+            <version>${spring-commander.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

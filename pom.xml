@@ -26,7 +26,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <springdoc.version>2.3.0</springdoc.version>
         <spring-commander.version>0.0.3</spring-commander.version>
-    </properties> 
+    </properties>
     
     <repositories>
         <repository>

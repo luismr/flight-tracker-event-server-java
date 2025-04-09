@@ -24,12 +24,12 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         server-id: github
-        server-username: ${{ env.SPRING_COMMANDER_USERNAME }}
+        server-username: ${{ vars.SPRING_COMMANDER_USERNAME }}
         server-password: ${{ secrets.SPRING_COMMANDER_TOKEN }}
         cache: maven
     
     - name: Build with Maven
-      run: cat /home/runner/.m2/settings.xml && mvn -B clean verify --settings .mvn/settings.xml
+      run: cat /home/runner/.m2/settings.xml && mvn -B clean verify
       
     - name: Upload coverage report
       uses: actions/upload-artifact@v4

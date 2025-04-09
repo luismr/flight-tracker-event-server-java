@@ -1,9 +1,0 @@
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
-  <servers>
-    <server>
-      <id>github</id>
-      <username>${env.SPRING_COMMANDER_USERNAME}</username>
-      <password>${env.SPRING_COMMANDER_TOKEN}</password>
-    </server>
-  </servers>
-</settings>

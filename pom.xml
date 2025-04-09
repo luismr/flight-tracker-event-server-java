@@ -26,13 +26,19 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <springdoc.version>2.3.0</springdoc.version>
         <spring-commander.version>0.0.3</spring-commander.version>
+        <spring-datasource-routing.version>0.0.1</spring-datasource-routing.version>
     </properties> 
     
     <repositories>
         <repository>
-            <id>github</id>
+            <id>github-spring-commander</id>
             <name>Spring Commander GitHub Packages</name>
             <url>https://maven.pkg.github.com/luismr/spring-commander</url>
+        </repository>
+        <repository>
+            <id>github-spring-datasource-routing</id>
+            <name>Spring DataSource Routing GitHub Packages</name>
+            <url>https://maven.pkg.github.com/luismr/spring-datasource-routing</url>
         </repository>
     </repositories>
     
@@ -79,6 +85,12 @@
             <groupId>dev.luismachadoreis.blueprint</groupId>
             <artifactId>spring-commander</artifactId>
             <version>${spring-commander.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.luismachadoreis.blueprint</groupId>
+            <artifactId>spring-datasource-routing</artifactId>
+            <version>${spring-datasource-routing.version}</version>
         </dependency>
 
         <dependency>

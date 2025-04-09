@@ -92,4 +92,3 @@ api:
 app:
   read-write-routing:
     enabled: false
-

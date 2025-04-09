@@ -3,9 +3,14 @@
   xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
   <servers>
     <server>
-      <id>github</id>
+      <id>github-spring-commander</id>
       <username>${env.SPRING_COMMANDER_USERNAME}</username>
       <password>${env.SPRING_COMMANDER_TOKEN}</password>
+    </server>
+    <server>
+      <id>github-spring-datasource-routing</id>
+      <username>${env.SPRING_DATASOURCE_ROUTING_USERNAME}</username>
+      <password>${env.SPRING_DATASOURCE_ROUTING_TOKEN}</password>
     </server>
   </servers>
 </settings>

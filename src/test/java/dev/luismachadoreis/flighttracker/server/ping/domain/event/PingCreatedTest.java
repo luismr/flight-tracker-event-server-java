@@ -20,18 +20,22 @@ class PingCreatedTest {
         var geoAltitude = 30000.0;
         var baroAltitude = 29000.0;
         var onGround = false;
+        var velocity = 100.0;
+        var verticalRate = 1000.0;
         var timestamp = Instant.now();
 
         // When
         var event = new PingCreated(
             id,
             icao24,
-            callsign,
+            callsign,   
             latitude,
             longitude,
             geoAltitude,
             baroAltitude,
             onGround,
+            velocity,
+            verticalRate,
             timestamp
         );
 

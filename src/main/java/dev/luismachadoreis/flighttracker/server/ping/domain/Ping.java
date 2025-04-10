@@ -199,6 +199,8 @@ public class Ping extends AbstractAggregateRoot<Ping> {
             this.position.geoAltitude(),
             this.position.baroAltitude(),
             this.position.onGround(),
+            this.vector.velocity(),
+            this.vector.verticalRate(),
             this.lastUpdate
         ));
     }

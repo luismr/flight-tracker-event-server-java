@@ -16,13 +16,16 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class PingEventPublisher {
 
     private final MapUpdatesHandler mapUpdatesHandler;
-   
+    private final JsonUtils jsonUtils;
+
     /**
      * Constructor for PingEventPublisher.
      * @param mapUpdatesHandler the MapUpdatesHandler to publish to
+     * @param jsonUtils the JsonUtils to use for serialization
      */
-    public PingEventPublisher(MapUpdatesHandler mapUpdatesHandler) {
+    public PingEventPublisher(MapUpdatesHandler mapUpdatesHandler, JsonUtils jsonUtils) {
         this.mapUpdatesHandler = mapUpdatesHandler;
+        this.jsonUtils = jsonUtils;
     }
 
     /**
@@ -31,7 +34,7 @@ public class PingEventPublisher {
      */ 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)   
     public void handlePingCreated(PingCreated event) {
-        mapUpdatesHandler.sendMessage(JsonUtils.toJson(event));
+        mapUpdatesHandler.sendMessage(jsonUtils.toJson(event));
     }
     
 }

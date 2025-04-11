@@ -196,6 +196,7 @@ public class Ping extends AbstractAggregateRoot<Ping> {
             this.aircraft.callsign(),
             this.position.latitude(),
             this.position.longitude(),
+            this.vector.trueTrack(),
             this.position.geoAltitude(),
             this.position.baroAltitude(),
             this.position.onGround(),

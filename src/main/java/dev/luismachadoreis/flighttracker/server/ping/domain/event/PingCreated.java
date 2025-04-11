@@ -15,6 +15,8 @@ public record PingCreated  (
     Double latitude,
     @JsonProperty("longitude")
     Double longitude,
+    @JsonProperty("true_track")
+    Double trueTrack,
     @JsonProperty("geo_altitude")
     Double geoAltitude,
     @JsonProperty("baro_altitude")

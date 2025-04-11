@@ -23,14 +23,15 @@ class PingCreatedTest {
         var velocity = 100.0;
         var verticalRate = 1000.0;
         var timestamp = Instant.now();
-
+        var trueTrack = 10.0;
         // When
         var event = new PingCreated(
             id,
             icao24,
             callsign,   
             latitude,
-            longitude,
+            longitude,  
+            trueTrack,
             geoAltitude,
             baroAltitude,
             onGround,

@@ -13,7 +13,13 @@ COPY .mvn .mvn
 COPY pom.xml .
 COPY src ./src
 
-RUN mvn clean install -DskipTests --settings .mvn/settings.xml
+# Install dependencies first (this layer will be cached)
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn dependency:go-offline --settings .mvn/settings.xml
+
+# Build the application
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn clean install -DskipTests --settings .mvn/settings.xml
 
 # Run stage
 FROM eclipse-temurin:21-jre-jammy

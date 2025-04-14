@@ -33,3 +33,5 @@ build/
 .vscode/ 
 
 .env
+
+.cache/.m2/repository

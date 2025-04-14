@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  server:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - SPRING_COMMANDER_USERNAME=${SPRING_COMMANDER_USERNAME}
+        - SPRING_COMMANDER_TOKEN=${SPRING_COMMANDER_TOKEN}
+        - SPRING_DATASOURCE_ROUTING_USERNAME=${SPRING_DATASOURCE_ROUTING_USERNAME}
+        - SPRING_DATASOURCE_ROUTING_TOKEN=${SPRING_DATASOURCE_ROUTING_TOKEN}
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      # Read-Write Routing Configuration
+      - SPRING_DATASOURCE_WRITER_JDBCURL=jdbc:postgresql://postgres:5432/flighttracker
+      - SPRING_DATASOURCE_WRITER_USERNAME=flighttracker
+      - SPRING_DATASOURCE_WRITER_PASSWORD=flighttracker
+      - SPRING_DATASOURCE_READER_JDBCURL=jdbc:postgresql://postgres:5432/flighttracker
+      - SPRING_DATASOURCE_READER_USERNAME=flighttracker
+      - SPRING_DATASOURCE_READER_PASSWORD=flighttracker
+      - APP_READ_WRITE_ROUTING_ENABLED=false
+      # Redis Configuration
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      # Kafka Configuration
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      kafka:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s 

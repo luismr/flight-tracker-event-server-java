@@ -1,15 +1,25 @@
 package dev.luismachadoreis.flighttracker.server.ping.application.dto;
 
+import dev.luismachadoreis.flighttracker.server.ping.domain.Ping;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PingDTOMapperTest {
+class PingMapperTest {
+
+    private PingMapper mapper;
+
+    @BeforeEach
+    void setUp() {
+        mapper = new PingMapper();
+    }
 
     @Test
-    void shouldMapFlightDataDTOToPingDTO() {
+    void shouldMapFlightDataToPingDTO() {
         // Given
         Long now = Instant.now().getEpochSecond();
         var flightData = new FlightDataDTO(
@@ -33,7 +43,7 @@ class PingDTOMapperTest {
         );
 
         // When
-        var pingDTO = PingDTOMapper.fromFlightData(flightData);
+        var pingDTO = mapper.fromFlightData(flightData);
 
         // Then
         assertThat(pingDTO.id()).isNotNull();
@@ -61,5 +71,49 @@ class PingDTOMapperTest {
         assertThat(pingDTO.position().onGround()).isEqualTo(flightData.onGround());
         assertThat(pingDTO.position().source()).isEqualTo(flightData.positionSource());
         assertThat(pingDTO.position().time()).isEqualTo(Instant.ofEpochSecond(flightData.timePosition()));
+    }
+
+    @Test
+    void shouldMapPingToDTO() {
+        // Given
+        var now = Instant.now();
+        var aircraft = new Ping.Aircraft("ABC123", "FL123", "US", now, "7700", true, new Integer[]{1, 2});
+        var vector = new Ping.Vector(500.0, 180.0, 0.0);
+        var position = new Ping.Position(10.0, 20.0, 30000.0, 29000.0, false, 1, now);
+        var ping = new Ping(aircraft, vector, position);
+
+        // When
+        var dto = mapper.toDTO(ping);
+
+        // Then
+        assertThat(dto.id()).isEqualTo(ping.getId());
+        assertThat(dto.aircraft().icao24()).isEqualTo(aircraft.icao24());
+        assertThat(dto.aircraft().callsign()).isEqualTo(aircraft.callsign());
+        assertThat(dto.vector().velocity()).isEqualTo(vector.velocity());
+        assertThat(dto.position().latitude()).isEqualTo(position.latitude());
+        assertThat(dto.lastUpdate()).isEqualTo(ping.getLastUpdate());
+    }
+
+    @Test
+    void shouldMapDTOToDomain() {
+        // Given
+        var now = Instant.now();
+        var dto = new PingDTO(
+            null,
+            new PingDTO.Aircraft("ABC123", "FL123", "US", now, "7700", true, new Integer[]{1, 2}),
+            new PingDTO.Vector(500.0, 180.0, 0.0),
+            new PingDTO.Position(10.0, 20.0, 30000.0, 29000.0, false, 1, now),
+            null
+        );
+
+        // When
+        var ping = mapper.toDomain(dto);
+
+        // Then
+        assertThat(ping.getId()).isNotNull();
+        assertThat(ping.getAircraft().icao24()).isEqualTo(dto.aircraft().icao24());
+        assertThat(ping.getVector().velocity()).isEqualTo(dto.vector().velocity());
+        assertThat(ping.getPosition().latitude()).isEqualTo(dto.position().latitude());
+        assertThat(ping.getLastUpdate()).isNotNull();
     }
 } 

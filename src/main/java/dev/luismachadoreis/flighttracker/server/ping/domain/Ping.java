@@ -1,7 +1,6 @@
 package dev.luismachadoreis.flighttracker.server.ping.domain;
 
 import dev.luismachadoreis.flighttracker.server.ping.domain.event.PingCreated;
-import dev.luismachadoreis.flighttracker.server.ping.application.dto.PingDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,64 +35,6 @@ public class Ping extends AbstractAggregateRoot<Ping> {
         this.vector = vector;
         this.position = position;
         this.lastUpdate = Instant.now();
-    }
-
-    public PingDTO toDTO() {
-        return new PingDTO(
-            this.id,
-            new PingDTO.Aircraft(
-                this.aircraft.icao24(),
-                this.aircraft.callsign(),
-                this.aircraft.originCountry(),
-                this.aircraft.lastContact(),
-                this.aircraft.squawk(),
-                this.aircraft.spi(),
-                this.aircraft.sensors()
-            ),
-            new PingDTO.Vector(
-                this.vector.velocity(),
-                this.vector.trueTrack(),
-                this.vector.verticalRate()
-            ),
-            new PingDTO.Position(
-                this.position.longitude(),
-                this.position.latitude(),
-                this.position.geoAltitude(),
-                this.position.baroAltitude(),
-                this.position.onGround(),
-                this.position.source(),
-                this.position.time()
-            ),
-            this.lastUpdate
-        );
-    }
-
-    public static Ping fromDTO(PingDTO dto) {
-        return new Ping(
-            new Aircraft(
-                dto.aircraft().icao24(),
-                dto.aircraft().callsign(),
-                dto.aircraft().originCountry(),
-                dto.aircraft().lastContact(),
-                dto.aircraft().squawk(),
-                dto.aircraft().spi(),
-                dto.aircraft().sensors()
-            ),
-            new Vector(
-                dto.vector().velocity(),
-                dto.vector().trueTrack(),
-                dto.vector().verticalRate()
-            ),
-            new Position(
-                dto.position().longitude(),
-                dto.position().latitude(),
-                dto.position().geoAltitude(),
-                dto.position().baroAltitude(),
-                dto.position().onGround(),
-                dto.position().source(),
-                dto.position().time()
-            )
-        );
     }
 
     @Embeddable
@@ -205,5 +146,4 @@ public class Ping extends AbstractAggregateRoot<Ping> {
             this.lastUpdate
         ));
     }
-    
 }

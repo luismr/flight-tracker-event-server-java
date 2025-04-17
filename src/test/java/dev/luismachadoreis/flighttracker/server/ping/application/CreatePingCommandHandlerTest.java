@@ -1,6 +1,7 @@
 package dev.luismachadoreis.flighttracker.server.ping.application;
 
 import dev.luismachadoreis.flighttracker.server.ping.application.dto.PingDTO;
+import dev.luismachadoreis.flighttracker.server.ping.application.dto.PingMapper;
 import dev.luismachadoreis.flighttracker.server.ping.domain.Ping;
 import dev.luismachadoreis.flighttracker.server.ping.domain.PingRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,11 +23,14 @@ class CreatePingCommandHandlerTest {
     @Mock
     private PingRepository pingRepository;
 
+    @Mock
+    private PingMapper pingMapper;
+
     private CreatePingCommandHandler handler;
 
     @BeforeEach
     void setUp() {
-        handler = new CreatePingCommandHandler(pingRepository);
+        handler = new CreatePingCommandHandler(pingRepository, pingMapper);
     }
 
     @Test
@@ -42,21 +46,22 @@ class CreatePingCommandHandlerTest {
         );
         CreatePingCommand command = new CreatePingCommand(pingDTO);
 
-        when(pingRepository.save(any(Ping.class))).thenAnswer(invocation -> {
-            Ping savedPing = invocation.getArgument(0);
-            return new Ping(
-                savedPing.getAircraft(),
-                savedPing.getVector(),
-                savedPing.getPosition()
-            );
-        });
+        Ping expectedPing = new Ping(
+            new Ping.Aircraft("ABC123", "B737", "Boeing", now, "1234", false, new Integer[0]),
+            new Ping.Vector(500.0, 180.0, 0.0),
+            new Ping.Position(-0.1278, 51.5074, 1000.0, 1000.0, false, 1, now)
+        );
+
+        when(pingMapper.toDomain(pingDTO)).thenReturn(expectedPing);
+        when(pingRepository.save(any(Ping.class))).thenReturn(expectedPing);
 
         // When
         UUID actualId = handler.handle(command);
 
         // Then
         assertThat(actualId).isNotNull();
-        verify(pingRepository).save(any(Ping.class));
+        verify(pingRepository).save(expectedPing);
+        verify(pingMapper).toDomain(pingDTO);
     }
 
     @Test
@@ -72,23 +77,21 @@ class CreatePingCommandHandlerTest {
         );
         CreatePingCommand command = new CreatePingCommand(pingDTO);
 
-        when(pingRepository.save(any(Ping.class))).thenAnswer(invocation -> {
-            Ping savedPing = invocation.getArgument(0);
-            return new Ping(
-                savedPing.getAircraft(),
-                savedPing.getVector(),
-                savedPing.getPosition()
-            );
-        });
+        Ping expectedPing = new Ping(
+            new Ping.Aircraft("ABC123", "B737", "Boeing", now, "1234", false, new Integer[0]),
+            new Ping.Vector(500.0, 180.0, 0.0),
+            new Ping.Position(-0.1278, 51.5074, 1000.0, 1000.0, false, 1, now)
+        );
+
+        when(pingMapper.toDomain(pingDTO)).thenReturn(expectedPing);
+        when(pingRepository.save(any(Ping.class))).thenReturn(expectedPing);
 
         // When
         UUID actualId = handler.handle(command);
 
         // Then
         assertThat(actualId).isNotNull();
-        verify(pingRepository).save(argThat(ping -> 
-            ping.getLastUpdate() != null && 
-            ping.getAircraft().icao24().equals("ABC123")
-        ));
+        verify(pingRepository).save(expectedPing);
+        verify(pingMapper).toDomain(pingDTO);
     }
 } 

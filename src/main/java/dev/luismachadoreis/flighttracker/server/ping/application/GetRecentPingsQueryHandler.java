@@ -3,6 +3,7 @@ package dev.luismachadoreis.flighttracker.server.ping.application;
 import dev.luismachadoreis.blueprint.cqs.query.QueryHandler;
 import dev.luismachadoreis.flighttracker.server.ping.application.dto.PingDTO;
 import dev.luismachadoreis.flighttracker.server.ping.domain.PingRepository;
+import dev.luismachadoreis.flighttracker.server.ping.application.dto.PingMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,12 +15,14 @@ import java.util.Objects;
 @Component
 public class GetRecentPingsQueryHandler implements QueryHandler<GetRecentPingsQuery, List<PingDTO>> {
     private final PingRepository pingRepository;
+    private final PingMapper pingMapper;
 
     /*
      * This constructor injects the ping repository into the query handler.
      */
-    public GetRecentPingsQueryHandler(PingRepository pingRepository) {
+    public GetRecentPingsQueryHandler(PingRepository pingRepository, PingMapper pingMapper) {
         this.pingRepository = pingRepository;
+        this.pingMapper = pingMapper;
     }
 
     /*
@@ -32,7 +35,7 @@ public class GetRecentPingsQueryHandler implements QueryHandler<GetRecentPingsQu
 
         return pingRepository.findTopNPings(query.limit())
             .stream()
-            .map(ping -> ping.toDTO())
+            .map(pingMapper::toDTO)
             .toList();
     }
 } 

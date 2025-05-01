@@ -12,7 +12,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Clock;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,16 +31,18 @@ class FlightDataSubscriberTest {
     private PingMapper pingMapper;
 
     private FlightDataSubscriber subscriber;
+    private Clock fixedClock;
 
     @BeforeEach
     void setUp() {
+        fixedClock = Clock.fixed(Instant.parse("2024-01-01T00:00:00Z"), ZoneId.of("UTC"));
         subscriber = new FlightDataSubscriber(mediator, pingMapper);
     }
 
     @Test
     void shouldConsumeFlightDataAndCreatePing() {
         // Given
-        Long now = Instant.now().getEpochSecond();
+        Long now = Instant.now(fixedClock).getEpochSecond();
         FlightDataDTO flightData = new FlightDataDTO(
             "ABC123",
             "FL123",
@@ -84,7 +88,7 @@ class FlightDataSubscriberTest {
                 flightData.positionSource(),
                 Instant.ofEpochSecond(flightData.timePosition())
             ),
-            Instant.now()
+            Instant.now(fixedClock)
         );
 
         when(pingMapper.fromFlightData(flightData)).thenReturn(expectedPingDTO);

@@ -2,11 +2,18 @@ package dev.luismachadoreis.flighttracker.server.ping.application.dto;
 
 import dev.luismachadoreis.flighttracker.server.ping.domain.Ping;
 import org.springframework.stereotype.Component;
+import java.time.Clock;
 import java.time.Instant;
 import java.util.UUID;
 
 @Component
 public class PingMapper {
+    
+    private final Clock clock;
+
+    public PingMapper(Clock clock) {
+        this.clock = clock;
+    }
     
     /**
      * Map a Ping to a PingDTO.
@@ -107,7 +114,7 @@ public class PingMapper {
                 flightData.positionSource(),
                 flightData.timePosition() != null ? Instant.ofEpochSecond(flightData.timePosition()) : null
             ),
-            Instant.now()
+            Instant.now(clock)
         );
     }
 } 

@@ -14,8 +14,6 @@ public record ClockProperties(
     String timezone
 ) {
     public ClockProperties {
-        if (timezone == null) {
-            timezone = "UTC";
-        }
+        timezone = Objects.requireNonNullElse(timezone, "UTC");
     }
 } 

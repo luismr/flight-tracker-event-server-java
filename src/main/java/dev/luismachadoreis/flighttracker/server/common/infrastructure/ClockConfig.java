@@ -1,6 +1,5 @@
 package dev.luismachadoreis.flighttracker.server.common.infrastructure;
 
-import dev.luismachadoreis.flighttracker.server.common.infrastructure.config.ClockProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

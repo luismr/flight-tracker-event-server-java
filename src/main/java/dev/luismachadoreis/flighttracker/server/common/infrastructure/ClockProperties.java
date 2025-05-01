@@ -1,4 +1,6 @@
-package dev.luismachadoreis.flighttracker.server.common.infrastructure.config;
+package dev.luismachadoreis.flighttracker.server.common.infrastructure;
+
+import java.util.Objects;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

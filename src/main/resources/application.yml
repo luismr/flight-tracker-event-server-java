@@ -92,3 +92,5 @@ api:
 app:
   read-write-routing:
     enabled: false
+  clock:
+    timezone: UTC

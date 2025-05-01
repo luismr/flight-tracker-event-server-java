@@ -4,7 +4,9 @@ import dev.luismachadoreis.flighttracker.server.ping.domain.Ping;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Clock;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,16 +14,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PingMapperTest {
 
     private PingMapper mapper;
+    private Clock fixedClock;
 
     @BeforeEach
     void setUp() {
-        mapper = new PingMapper();
+        fixedClock = Clock.fixed(Instant.parse("2024-01-01T00:00:00Z"), ZoneId.of("UTC"));
+        mapper = new PingMapper(fixedClock);
     }
 
     @Test
     void shouldMapFlightDataToPingDTO() {
         // Given
-        Long now = Instant.now().getEpochSecond();
+        Long now = Instant.now(fixedClock).getEpochSecond();
         var flightData = new FlightDataDTO(
             "ABC123",
             "FL123",
@@ -47,7 +51,7 @@ class PingMapperTest {
 
         // Then
         assertThat(pingDTO.id()).isNotNull();
-        assertThat(pingDTO.lastUpdate()).isNotNull();
+        assertThat(pingDTO.lastUpdate()).isEqualTo(Instant.now(fixedClock));
 
         // Aircraft data
         assertThat(pingDTO.aircraft().icao24()).isEqualTo(flightData.icao24());
@@ -76,7 +80,7 @@ class PingMapperTest {
     @Test
     void shouldMapPingToDTO() {
         // Given
-        var now = Instant.now();
+        var now = Instant.now(fixedClock);
         var aircraft = new Ping.Aircraft("ABC123", "FL123", "US", now, "7700", true, new Integer[]{1, 2});
         var vector = new Ping.Vector(500.0, 180.0, 0.0);
         var position = new Ping.Position(10.0, 20.0, 30000.0, 29000.0, false, 1, now);
@@ -97,7 +101,7 @@ class PingMapperTest {
     @Test
     void shouldMapDTOToDomain() {
         // Given
-        var now = Instant.now();
+        var now = Instant.now(fixedClock);
         var dto = new PingDTO(
             null,
             new PingDTO.Aircraft("ABC123", "FL123", "US", now, "7700", true, new Integer[]{1, 2}),

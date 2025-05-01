@@ -18,13 +18,122 @@ A Spring Boot application for tracking flight events.
 ![Coverage](badges/jacoco.svg)
 ![Branches](badges/branches.svg)
 
-## Getting Started
+## Features
 
-### Prerequisites
+- Real-time flight position tracking
+- Kafka-based event streaming
+- PostgreSQL database with read-write routing
+- Redis caching
+- Swagger/OpenAPI documentation
+- Configurable timezone support
 
-- Java 21
-- Maven 3.9.6
+## Prerequisites
+
+- Java 17 or later
 - Docker and Docker Compose
+- PostgreSQL
+- Redis
+- Kafka
+
+## Configuration
+
+The application can be configured through `application.yml`. Key configurations include:
+
+### Database
+
+```yaml
+spring:
+  datasource:
+    writer:
+      jdbcUrl: jdbc:postgresql://localhost:5432/flighttracker
+      username: flighttracker
+      password: flighttracker
+    reader:
+      jdbcUrl: jdbc:postgresql://localhost:5433/flighttracker
+      username: flighttracker
+      password: flighttracker
+```
+
+### Kafka
+
+```yaml
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: flight-tracker-group
+    topic:
+      flight-positions: flight-positions
+      ping-created: ping-created
+```
+
+### Redis
+
+```yaml
+spring:
+  redis:
+    host: localhost
+    port: 6379
+```
+
+### Clock Configuration
+
+The application uses a configurable clock for timestamp operations. By default, it uses UTC:
+
+```yaml
+app:
+  clock:
+    timezone: UTC
+```
+
+You can change the timezone to any valid timezone ID (e.g., "America/New_York", "Europe/London"):
+
+```yaml
+app:
+  clock:
+    timezone: America/New_York
+```
+
+### API Documentation
+
+Swagger UI is available at `/swagger-ui.html` with the following configuration:
+
+```yaml
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+```
+
+## Development
+
+### Running the Application
+
+1. Start the required services using Docker Compose:
+   ```bash
+   docker-compose up -d
+   ```
+
+2. Run the application:
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+
+### Testing
+
+Run the tests:
+```bash
+./mvnw test
+```
+
+## API Documentation
+
+The API documentation is available at:
+- Swagger UI: http://localhost:8080/swagger-ui.html
+- OpenAPI JSON: http://localhost:8080/api-docs
+
+## Getting Started
 
 ### External Dependencies
 
@@ -120,12 +229,6 @@ cd flight-tracker-event-server-java
 mvn clean install
 ```
 
-### Running
-
-```bash
-mvn spring-boot:run
-```
-
 ## Contributing
 
 1. Fork the repository
@@ -193,117 +296,22 @@ app:
 ## Project Structure
 
 ```
-.
-├── .github/
-│   └── workflows/
-│       └── maven.yml
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── dev/
-│   │   │       └── luismachadoreis/
-│   │   │           └── flighttracker/
-│   │   │               └── server/
-│   │   │                   ├── common/
-│   │   │                   │   ├── application/
-│   │   │                   │   │   └── cqs/
-│   │   │                   │   │       ├── command/
-│   │   │                   │   │       │   ├── Command.java
-│   │   │                   │   │       │   └── CommandHandler.java
-│   │   │                   │   │       ├── query/
-│   │   │                   │   │       │   ├── Query.java
-│   │   │                   │   │       │   └── QueryHandler.java
-│   │   │                   │   │       └── mediator/
-│   │   │                   │   │           ├── Mediator.java
-│   │   │                   │   │           └── SpringMediator.java
-│   │   │                   │   └── infrastructure/
-│   │   │                   │       ├── datasource/
-│   │   │                   │       │   ├── DbContextHolder.java
-│   │   │                   │       │   ├── ReadWriteRoutingAspect.java
-│   │   │                   │       │   ├── ReadWriteRoutingProperties.java
-│   │   │                   │       │   └── RoutingDataSource.java
-│   │   │                   │       ├── DatasourceConfig.java
-│   │   │                   │       ├── KafkaConfig.java
-│   │   │                   │       └── OpenApiConfig.java
-│   │   │                   ├── flightdata/
-│   │   │                   │   └── infrastructure/
-│   │   │                   │       ├── kafka/
-│   │   │                   │       │   └── FlightDataConsumerConfig.java
-│   │   │                   │       └── pubsub/
-│   │   │                   │           └── FlightDataSubscriber.java
-│   │   │                   ├── ping/
-│   │   │                   │   ├── api/
-│   │   │                   │   │   └── PingController.java
-│   │   │                   │   ├── application/
-│   │   │                   │   │   ├── dto/
-│   │   │                   │   │   │   ├── FlightDataDTO.java
-│   │   │                   │   │   │   ├── PingDTO.java
-│   │   │                   │   │   │   └── PingDTOMapper.java
-│   │   │                   │   │   └── usecase/
-│   │   │                   │   │       ├── CreatePingCommand.java
-│   │   │                   │   │       ├── CreatePingCommandHandler.java
-│   │   │                   │   │       ├── GetRecentPingsQuery.java
-│   │   │                   │   │       └── GetRecentPingsQueryHandler.java
-│   │   │                   │   ├── domain/
-│   │   │                   │   │   ├── event/
-│   │   │                   │   │   │   └── PingCreated.java
-│   │   │                   │   │   ├── Ping.java
-│   │   │                   │   │   └── PingRepository.java
-│   │   │                   │   └── infrastructure/
-│   │   │                   │       ├── pubsub/
-│   │   │                   │       │   └── ping/
-│   │   │                   │       │       └── PingEventPublisher.java
-│   │   │                   │       └── repository/
-│   │   │                   │           └── JpaPingRepository.java
-│   │   │                   └── FlightTrackerApplication.java
-│   │   └── resources/
-│   │       ├── application.yml
-│   │       └── application-test.yml
-│   └── test/
-│       └── java/
-│           └── dev/
-│               └── luismachadoreis/
-│                   └── flighttracker/
-│                       └── server/
-│                           ├── common/
-│                           │   ├── application/
-│                           │   │   └── cqs/
-│                           │   │       └── mediator/
-│                           │   │           └── SpringMediatorTest.java
-│                           │   └── infrastructure/
-│                           │       └── datasource/
-│                           │           ├── ReadWriteRoutingAspectTest.java
-│                           │           └── RoutingDataSourceTest.java
-│                           ├── flightdata/
-│                           │   └── infrastructure/
-│                           │       ├── kafka/
-│                           │       │   └── FlightDataConsumerConfigTest.java
-│                           │       └── pubsub/
-│                           │           └── FlightDataSubscriberTest.java
-│                           ├── ping/
-│                           │   ├── api/
-│                           │   │   └── PingControllerTest.java
-│                           │   ├── application/
-│                           │   │   ├── dto/
-│                           │   │   │   ├── FlightDataDTOTest.java
-│                           │   │   │   ├── PingDTOTest.java
-│                           │   │   │   └── PingDTOMapperTest.java
-│                           │   │   └── usecase/
-│                           │   │       ├── CreatePingCommandHandlerTest.java
-│                           │   │       └── GetRecentPingsQueryHandlerTest.java
-│                           │   └── domain/
-│                           │       └── PingTest.java
-│                           └── SpringContextTest.java
-├── badges/
-│   ├── jacoco.svg
-│   └── branches.svg
-├── db/
-│   └── init-scripts/
-│       └── 01-init.sql
-├── docker-compose.yml
-├── LICENSE.md
-├── pom.xml
-└── README.md
+src/
+├── main/
+│   ├── java/
+│   │   └── dev/luismachadoreis/flighttracker/server/
+│   │       ├── common/           # Common infrastructure and utilities
+│   │       ├── flightdata/       # Flight data processing
+│   │       └── ping/            # Ping domain and API
+│   └── resources/
+│       ├── application.yml      # Main configuration
+│       └── application-test.yml # Test configuration
+└── test/
+    └── java/
+        └── dev/luismachadoreis/flighttracker/server/
+            ├── common/          # Common infrastructure tests
+            ├── flightdata/      # Flight data tests
+            └── ping/           # Ping domain and API tests
 ```
 
 ## License

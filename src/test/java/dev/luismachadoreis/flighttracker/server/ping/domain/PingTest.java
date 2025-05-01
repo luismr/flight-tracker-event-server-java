@@ -1,13 +1,13 @@
 package dev.luismachadoreis.flighttracker.server.ping.domain;
 
-import dev.luismachadoreis.flighttracker.server.ping.domain.event.PingCreated;
-import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class PingTest {
 
@@ -42,24 +42,17 @@ class PingTest {
 
         // Then
         @SuppressWarnings("unchecked")
-        Collection<Object> events = (Collection<Object>) ReflectionTestUtils.getField(ping, "domainEvents");
+        var events = Optional.ofNullable(
+                (Collection<Object>) ReflectionTestUtils.getField(ping, "domainEvents")
+            ).orElseThrow(() -> new IllegalStateException("Domain events collection is null"));
+
         assertThat(events)
             .hasSize(1)
             .first()
-            .isInstanceOf(PingCreated.class);
+            .isInstanceOf(PingCreatedEvent.class);
 
-        var event = (PingCreated) events.iterator().next();
-        assertThat(event.pingId()).isEqualTo(ping.getId());
-        assertThat(event.icao24()).isEqualTo(aircraft.icao24());
-        assertThat(event.callsign()).isEqualTo(aircraft.callsign());
-        assertThat(event.latitude()).isEqualTo(position.latitude());
-        assertThat(event.longitude()).isEqualTo(position.longitude());
-        assertThat(event.trueTrack()).isEqualTo(vector.trueTrack());
-        assertThat(event.geoAltitude()).isEqualTo(position.geoAltitude());
-        assertThat(event.baroAltitude()).isEqualTo(position.baroAltitude());
-        assertThat(event.onGround()).isEqualTo(position.onGround());
-        assertThat(event.velocity()).isEqualTo(vector.velocity());
-        assertThat(event.verticalRate()).isEqualTo(vector.verticalRate());
+        var event = (PingCreatedEvent) events.stream().findFirst().orElseThrow(() -> new IllegalStateException("No event found"));
+        assertThat(event.ping()).isEqualTo(ping);
         assertThat(event.timestamp()).isEqualTo(ping.getLastUpdate());
     }
 } 

@@ -1,14 +1,21 @@
 package dev.luismachadoreis.flighttracker.server.ping.domain;
 
-import dev.luismachadoreis.flighttracker.server.ping.domain.event.PingCreated;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.UUID;
+
 import org.springframework.data.domain.AbstractAggregateRoot;
 
-import java.time.Instant;
-import java.util.UUID;
-import java.util.Arrays;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Converter;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -131,19 +138,7 @@ public class Ping extends AbstractAggregateRoot<Ping> {
      * Register the PingCreated event.
      */
     public void registerPingCreated() {
-        registerEvent(new PingCreated(
-            this.id,
-            this.aircraft.icao24(),
-            this.aircraft.callsign(),
-            this.position.latitude(),
-            this.position.longitude(),
-            this.vector.trueTrack(),
-            this.position.geoAltitude(),
-            this.position.baroAltitude(),
-            this.position.onGround(),
-            this.vector.velocity(),
-            this.vector.verticalRate(),
-            this.lastUpdate
-        ));
+        registerEvent(new PingCreatedEvent(this, this.lastUpdate));
     }
+    
 }

@@ -293,68 +293,6 @@ app:
    - `ReadWriteRoutingAspect`: Sets the context based on transaction type
    - `DbContextHolder`: Thread-local holder for the current context
 
-## Message Payloads
-
-The application uses two main DTOs for message communication:
-
-### PingDTO
-Used to publish flight position updates to the flight-tracker-event-app via WebSocket.
-
-```json
-{
-  "id": "uuid",
-  "aircraft": {
-    "icao24": "string",
-    "callsign": "string",
-    "origin_country": "string",
-    "last_contact": "timestamp",
-    "squawk": "string",
-    "spi": boolean,
-    "sensors": [integer]
-  },
-  "vector": {
-    "velocity": double,
-    "true_track": double,
-    "vertical_rate": double
-  },
-  "position": {
-    "longitude": double,
-    "latitude": double,
-    "geo_altitude": double,
-    "baro_altitude": double,
-    "on_ground": boolean,
-    "source": integer,
-    "time": "timestamp"
-  },
-  "last_update": "timestamp"
-}
-```
-
-### FlightDataDTO
-Used to subscribe to flight tracker data from the flight tracker producer via Kafka.
-
-```json
-{
-  "icao24": "string",
-  "callsign": "string",
-  "origin_country": "string",
-  "last_contact": long,
-  "time_position": long,
-  "longitude": double,
-  "latitude": double,
-  "baro_altitude": double,
-  "on_ground": boolean,
-  "velocity": double,
-  "true_track": double,
-  "vertical_rate": double,
-  "sensors": [integer],
-  "geo_altitude": double,
-  "squawk": "string",
-  "spi": boolean,
-  "position_source": integer
-}
-```
-
 ## Project Structure
 
 ```
@@ -375,6 +313,16 @@ src/
             ├── flightdata/      # Flight data tests
             └── ping/           # Ping domain and API tests
 ```
+
+## Analysis and Decisions
+
+### Architecture Decision Records (ADRs)
+
+* [ADR-001: WebSocket Notification Scalability Strategy](docs/adrs/adr-001-websocket-scalability.md) - Decision to implement a Kafka-based event distribution system for WebSocket notifications, with a path to future STOMP migration.
+
+### Technical Analysis
+
+* [WebSocket Notification Scalability](docs/analysis/technical-analysis-websocket-flight-tracker.md) - Analysis of WebSocket notification delivery alternatives, focusing on scalability, latency, and reliability requirements.
 
 ## License
 

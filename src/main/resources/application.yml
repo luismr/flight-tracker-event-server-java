@@ -93,7 +93,4 @@ app:
   read-write-routing:
     enabled: false
   clock:
-    timezone: UTC
-  websocket:
-    thread-pool:
-      workers: 4  
+    timezone: UTC 

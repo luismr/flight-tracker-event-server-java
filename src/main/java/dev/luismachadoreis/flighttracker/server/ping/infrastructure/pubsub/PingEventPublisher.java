@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Publishes PingCreated events to the MapUpdatesHandler.
+ * Publishes PingCreated events to WebSocket clients.
  */
 @Slf4j
 @Component

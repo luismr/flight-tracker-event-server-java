@@ -1,7 +1,6 @@
 package dev.luismachadoreis.flighttracker.server.ping.application;
 
 import dev.luismachadoreis.blueprint.cqs.command.CommandHandler;
-import dev.luismachadoreis.flighttracker.server.ping.domain.Ping;
 import dev.luismachadoreis.flighttracker.server.ping.domain.PingRepository;
 import dev.luismachadoreis.flighttracker.server.ping.application.dto.PingMapper;
 import org.springframework.stereotype.Component;

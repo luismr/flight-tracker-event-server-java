@@ -1,27 +1,22 @@
-package dev.luismachadoreis.flighttracker.server.ping.infrastructure.websocket;
+package dev.luismachadoreis.flighttracker.server.ping.infrastructure.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
+import dev.luismachadoreis.flighttracker.server.ping.infrastructure.websocket.MapUpdatesHandler;
+import lombok.AllArgsConstructor;
+
 /**
- * Configures the WebSocket endpoints and handlers.
+ * Configuration for the WebSocket server.
  */
 @Configuration
 @EnableWebSocket
-public class MapUpdatesConfig implements WebSocketConfigurer {
-
+@AllArgsConstructor
+public class WebSocketConfig implements WebSocketConfigurer {
     private final MapUpdatesHandler mapUpdatesHandler;
-
-    /**
-     * Constructor for MapUpdatesConfig.
-     * 
-     * @param mapUpdatesHandler the handler for map updates
-     */
-    public MapUpdatesConfig(MapUpdatesHandler mapUpdatesHandler) {
-        this.mapUpdatesHandler = mapUpdatesHandler;
-    }
 
     /**
      * Registers the WebSocket handlers.
@@ -29,8 +24,8 @@ public class MapUpdatesConfig implements WebSocketConfigurer {
      * @param registry the WebSocket handler registry
      */
     @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+    public void registerWebSocketHandlers(@NonNull WebSocketHandlerRegistry registry) {
         registry.addHandler(mapUpdatesHandler, "/map-updates").setAllowedOrigins("*");
     }
 
-}
+} 

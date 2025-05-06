@@ -94,3 +94,6 @@ app:
     enabled: false
   clock:
     timezone: UTC
+  websocket:
+    thread-pool:
+      workers: 4  

@@ -93,4 +93,16 @@ app:
   read-write-routing:
     enabled: false
   clock:
-    timezone: UTC 
+    timezone: UTC
+  flight-data:
+    subscriber:
+      enabled: true  
+  ping:
+    subscriber:
+      enabled: true
+    publisher:
+      enabled: true
+    websocket:
+      enabled: true
+
+  # ... rest of the file remains unchanged ... 

@@ -11,6 +11,7 @@ import dev.luismachadoreis.flighttracker.server.ping.domain.PingCreatedEvent;
 import dev.luismachadoreis.flighttracker.server.ping.infrastructure.websocket.MapUpdatesHandler;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 /**
  * Publishes PingCreated events to WebSocket clients.
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @AllArgsConstructor
+@ConditionalOnProperty(prefix = "app.ping.publisher", name = "enabled", havingValue = "true")
 public class PingEventPublisher {
 
     private final PingMapper pingMapper;

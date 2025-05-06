@@ -10,7 +10,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import org.springframework.lang.NonNull;
-
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.ExecutorService;
 
@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutorService;
  */
 @Slf4j
 @Component
+@ConditionalOnProperty(prefix = "app.ping.websocket", name = "enabled", havingValue = "true")
 public class MapUpdatesHandler extends TextWebSocketHandler {
 
     private static final Set<WebSocketSession> sessions = new HashSet<>();

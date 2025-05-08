@@ -101,8 +101,7 @@ app:
     subscriber:
       enabled: true
     publisher:
-      enabled: true
+      enabled: false
     websocket:
       enabled: true
 
-  # ... rest of the file remains unchanged ... 

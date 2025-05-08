@@ -23,9 +23,13 @@ public class PingEventConsumer {
     /**
      * Consumes ping created events from Kafka and forwards them to WebSocket clients.
      * 
-     * @param message the ping created event
+     * @param message the ping created event as JSON string
      */
-    @KafkaListener(topics = "${spring.kafka.topic.ping-created}", groupId = "${spring.kafka.consumer.group-id}")
+    @KafkaListener(
+        topics = "${spring.kafka.topic.ping-created}", 
+        groupId = "${spring.kafka.consumer.group-id}",
+        containerFactory = "pingEventKafkaListenerContainerFactory"
+    )
     public void consumePingCreated(String message) {
         log.debug("Received ping created event from Kafka: {}", message);
         if (StringUtils.hasText(message)) {
@@ -34,5 +38,4 @@ public class PingEventConsumer {
             log.debug("Skipping empty or null message");
         }
     }
-
 } 

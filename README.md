@@ -10,6 +10,42 @@
 ![JUnit](https://img.shields.io/badge/JUnit-5.x-blue)
 ![JaCoCo](https://img.shields.io/badge/JaCoCo-0.8.x-blue)
 
+## Table of Contents
+
+- [Build Status](#build-status)
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Configuration](#configuration)
+  - [Kafka Configuration](#kafka-configuration)
+    - [Component Control](#component-control)
+  - [Database](#database)
+    - [Benefits of Write/Read Replicas](#benefits-of-writeread-replicas)
+    - [When to Use Write/Read Replicas](#when-to-use-writeread-replicas)
+    - [Configuration](#configuration-1)
+    - [How Datasource Routing Works](#how-datasource-routing-works)
+  - [Redis](#redis)
+  - [Clock Configuration](#clock-configuration)
+  - [API Documentation](#api-documentation)
+- [Development](#development)
+  - [Running the Application](#running-the-application)
+  - [Testing](#testing)
+- [API Documentation](#api-documentation-1)
+- [Getting Started](#getting-started)
+  - [External Dependencies](#external-dependencies)
+  - [Using Docker Compose](#using-docker-compose)
+  - [Service Details](#service-details)
+  - [Manual Service Management](#manual-service-management)
+  - [Cloning the Repository](#cloning-the-repository)
+  - [Building](#building)
+- [Contributing](#contributing)
+- [GitHub Actions Permissions](#github-actions-permissions)
+- [Read Write Datasource Routing](#read-write-datasource-routing)
+- [Project Structure](#project-structure)
+- [Analysis and Decisions](#analysis-and-decisions)
+  - [Architecture Decision Records (ADRs)](#architecture-decision-records-adrs)
+  - [Technical Analysis](#technical-analysis)
+- [License](#license)
+
 A Spring Boot application for tracking flight events.
 
 ## Build Status
@@ -39,7 +75,84 @@ A Spring Boot application for tracking flight events.
 
 The application can be configured through `application.yml`. Key configurations include:
 
+### Kafka Configuration
+
+The application uses Kafka for event streaming and real-time data processing. Here's the complete Kafka configuration:
+
+```yaml
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: flight-tracker-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "dev.luismachadoreis.flighttracker.server.ping.application.dto"
+    topic:
+      flight-positions: flight-positions
+      ping-created: ping-created
+```
+
+#### Component Control
+
+You can enable or disable various Kafka components and WebSocket notifications:
+
+```yaml
+app:
+  flight-data:
+    subscriber:
+      enabled: true  # Enable/disable flight data Kafka subscriber
+  ping:
+    subscriber:
+      enabled: true  # Enable/disable ping Kafka subscriber
+    publisher:
+      enabled: true  # Enable/disable ping Kafka publisher
+    websocket:
+      enabled: true  # Enable/disable WebSocket notifications
+```
+![Load Balancing](docs/diagrams/arch_diagram_load_balancing.png)  
+
+These settings allow you to:
+- Control Kafka message consumption for flight data
+- Control Kafka message consumption for ping events
+- Control Kafka message publishing for ping events
+- Enable/disable WebSocket real-time notifications
+
 ### Database
+
+The application supports a Write/Read replica pattern for database operations. This pattern separates read and write operations to different database instances, providing several benefits:
+
+![Database Write/Read Replicas](docs/diagrams/arch_diagram_datasource_read_write.png)  
+
+#### Benefits of Write/Read Replicas
+
+1. **Improved Read Performance**
+   - Read operations are distributed across multiple replicas
+   - Reduced load on the primary database
+   - Better scalability for read-heavy workloads
+
+2. **High Availability**
+   - If the primary database fails, read replicas can continue serving read requests
+   - Automatic failover capabilities
+   - Reduced downtime impact
+
+3. **Geographic Distribution**
+   - Read replicas can be placed closer to users
+   - Reduced latency for read operations
+   - Better global performance
+
+#### When to Use Write/Read Replicas
+
+Consider implementing Write/Read replicas when:
+- Your application has a high read-to-write ratio (e.g., 80% reads, 20% writes)
+- You need to scale read operations independently
+- You require high availability and disaster recovery
+- You have geographically distributed users
+- Your application has reporting or analytics features that require heavy read operations
+
+#### Configuration
 
 ```yaml
 spring:
@@ -54,18 +167,50 @@ spring:
       password: flighttracker
 ```
 
-### Kafka
+#### How Datasource Routing Works
 
-```yaml
-spring:
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: flight-tracker-group
-    topic:
-      flight-positions: flight-positions
-      ping-created: ping-created
-```
+The application uses Spring's `@Transactional` annotation to determine which datasource to use. Here's how it works:
+
+![Datasource Routing](docs/diagrams/arch_diagram_datasource_routing.png)  
+
+1. **Read Operations**
+   ```java
+   @Transactional(readOnly = true)
+   public List<Flight> getRecentFlights() {
+       // This will use the reader datasource
+       return flightRepository.findAll();
+   }
+   ```
+
+2. **Write Operations**
+   ```java
+   @Transactional
+   public void saveFlight(Flight flight) {
+       // This will use the writer datasource
+       flightRepository.save(flight);
+   }
+   ```
+
+3. **Mixed Operations**
+   ```java
+   @Transactional
+   public void updateFlightStatus(String flightId, Status newStatus) {
+       // This will use the writer datasource for the entire method
+       Flight flight = flightRepository.findById(flightId);
+       flight.setStatus(newStatus);
+       flightRepository.save(flight);
+   }
+   ```
+
+The routing is handled by:
+- `ReadWriteRoutingAspect`: Intercepts `@Transactional` annotations
+- `DbContextHolder`: Maintains the current context in a ThreadLocal
+- `RoutingDataSource`: Routes the request to the appropriate datasource
+
+**Important Notes:**
+- Methods without `@Transactional` will use the writer datasource by default
+- Nested transactions inherit the datasource from the outer transaction
+- The `readOnly` flag is the key to determining which datasource to use
 
 ### Redis
 
@@ -145,185 +290,4 @@ The application requires the following external services:
 
 #### Using Docker Compose
 
-The project includes a `docker-compose.yml` file that sets up all required services. To manage the services:
-
-```bash
-# Start all services
-docker-compose up -d
-
-# Stop all services
-docker-compose down
-
-# View logs for all services
-docker-compose logs -f
-
-# View logs for a specific service
-docker-compose logs -f redis
-docker-compose logs -f postgres
-docker-compose logs -f kafka
-
-# Restart a specific service
-docker-compose restart redis
-docker-compose restart postgres
-docker-compose restart kafka
-
-# Stop and remove all containers and volumes
-docker-compose down -v
-```
-
-#### Service Details
-
-- **Redis**
-  - Port: 6379
-  - No authentication required
-  - Data persistence enabled
-
-- **PostgreSQL**
-  - Port: 5432
-  - Database: flighttracker
-  - Username: flighttracker
-  - Password: flighttracker
-  - Schema: flighttracker
-
-- **Kafka**
-  - Port: 9092
-  - Auto topic creation enabled
-  - Single broker configuration
-
-#### Manual Service Management
-
-If you prefer to manage services individually:
-
-```bash
-# Redis
-docker run -d --name redis -p 6379:6379 redis:7.4
-
-# PostgreSQL
-docker run -d --name postgres \
-  -e POSTGRES_USER=flighttracker \
-  -e POSTGRES_PASSWORD=flighttracker \
-  -e POSTGRES_DB=flighttracker \
-  -p 5432:5432 \
-  postgres:17
-
-# Kafka
-docker run -d --name kafka \
-  -p 9092:9092 \
-  -e KAFKA_BROKER_ID=1 \
-  -e KAFKA_LISTENERS=PLAINTEXT://:9092 \
-  -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
-  -e KAFKA_AUTO_CREATE_TOPICS_ENABLE=true \
-  apache/kafka:4
-```
-
-### Cloning the Repository
-
-```bash
-git clone git@github.com:luismr/flight-tracker-event-server-java.git
-cd flight-tracker-event-server-java
-```
-
-### Building
-
-```bash
-mvn clean install
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## GitHub Actions Permissions
-
-To enable automatic badge updates and coverage reports, ensure the following GitHub Actions permissions are set:
-
-1. Go to your repository's Settings
-2. Navigate to Actions > General
-3. Under "Workflow permissions", select:
-   - "Read and write permissions"
-   - "Allow GitHub Actions to create and approve pull requests"
-
-## Read Write Datasource Routing
-
-![Read Write Deployment](docs/arch_diagram_datasource_read_write.png)  
-
-The application supports read-write splitting for database operations. This feature is disabled by default but can be enabled through configuration.
-
-### Configuration
-
-```yaml
-spring:
-  datasource:
-    writer:
-      jdbcUrl: jdbc:postgresql://localhost:5432/flighttracker
-      username: flighttracker
-      password: flighttracker
-      driverClassName: org.postgresql.Driver
-      type: com.zaxxer.hikari.HikariDataSource
-    reader:
-      jdbcUrl: jdbc:postgresql://localhost:5433/flighttracker
-      username: flighttracker
-      password: flighttracker
-      driverClassName: org.postgresql.Driver
-      type: com.zaxxer.hikari.HikariDataSource
-
-app:
-  read-write-routing:
-    enabled: false  # Set to true to enable read-write splitting
-```
-
-### Important Notes
-
-1. When enabled, you must configure both write and read data sources
-2. The routing is based on Spring's `@Transactional` annotation:
-   - Read operations: Use `@Transactional(readOnly = true)`
-   - Write operations: Use `@Transactional` or `@Transactional(readOnly = false)`
-
-![Read Write DataSource Routing](docs/arch_diagram_datasource_routing.png)
-
-3. If read-write splitting is enabled but not properly configured, the application will fail to start
-4. For development and testing, it's recommended to keep this feature disabled
-5. The routing is handled by:
-   - `DatasourceConfig`: Configures the data sources and routing
-   - `RoutingDataSource`: Routes requests to the appropriate data source
-   - `ReadWriteRoutingAspect`: Sets the context based on transaction type
-   - `DbContextHolder`: Thread-local holder for the current context
-
-## Project Structure
-
-```
-src/
-├── main/
-│   ├── java/
-│   │   └── dev/luismachadoreis/flighttracker/server/
-│   │       ├── common/           # Common infrastructure and utilities
-│   │       ├── flightdata/       # Flight data processing
-│   │       └── ping/            # Ping domain and API
-│   └── resources/
-│       ├── application.yml      # Main configuration
-│       └── application-test.yml # Test configuration
-└── test/
-    └── java/
-        └── dev/luismachadoreis/flighttracker/server/
-            ├── common/          # Common infrastructure tests
-            ├── flightdata/      # Flight data tests
-            └── ping/           # Ping domain and API tests
-```
-
-## Analysis and Decisions
-
-### Architecture Decision Records (ADRs)
-
-* [ADR-001: WebSocket Notification Scalability Strategy](docs/adrs/adr-001-websocket-scalability.md) - Decision to implement a Kafka-based event distribution system for WebSocket notifications, with a path to future STOMP migration.
-
-### Technical Analysis
-
-* [WebSocket Notification Scalability](docs/analysis/technical-analysis-websocket-flight-tracker.md) - Analysis of WebSocket notification delivery alternatives, focusing on scalability, latency, and reliability requirements.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details. 
+The project includes a `docker-compose.yml`

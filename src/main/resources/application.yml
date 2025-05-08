@@ -94,3 +94,14 @@ app:
     enabled: false
   clock:
     timezone: UTC
+  flight-data:
+    subscriber:
+      enabled: true  
+  ping:
+    subscriber:
+      enabled: true
+    publisher:
+      enabled: false
+    websocket:
+      enabled: true
+
